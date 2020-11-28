@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Layout from "../componentes/Layout";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -15,6 +16,9 @@ const NUEVA_CUENTA = gql`
 `;
 
 export default function NuevaCuenta() {
+  // State del mensaje
+  const [mensaje, guardarMensaje] = useState(null);
+
   // Mutation para crear nuevos usuarios
   const [nuevoUsuario] = useMutation(NUEVA_CUENTA);
 
@@ -52,13 +56,25 @@ export default function NuevaCuenta() {
 
         // Redirigir al usuario
       } catch (error) {
-        console.log(error);
+        guardarMensaje(error.message.replace("GraphQL error:", ""));
+        setTimeout(() => {
+          guardarMensaje(null);
+        }, 3000);
       }
     },
   });
 
+  const mostrarMensaje = () => {
+    return (
+      <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+        <p>{mensaje}</p>
+      </div>
+    );
+  };
+
   return (
     <Layout>
+      {mensaje && mostrarMensaje()}
       <h1 className="text-center text-2xl text-white font-light">
         Crear nueva cuenta
       </h1>
