@@ -1,6 +1,22 @@
 import Layout from "../componentes/Layout";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function NuevaCuenta() {
+  // Validación del formulario
+  const formik = useFormik({
+    initialValues: {
+      nombre: "",
+      apellido: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: (valores) => {
+      console.log("enviando");
+      console.log(valores);
+    },
+  });
+
   return (
     <Layout>
       <h1 className="text-center text-2xl text-white font-light">
@@ -8,7 +24,10 @@ export default function NuevaCuenta() {
       </h1>
       <div className="flex justify-center mt-5">
         <div className="w-full max-w-sm">
-          <form className="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4">
+          <form
+            className="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4"
+            onSubmit={formik.handleSubmit}
+          >
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -21,6 +40,8 @@ export default function NuevaCuenta() {
                 type="text"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                 placeholder="Nombre usuario"
+                value={formik.values.nombre}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="mb-4">
@@ -35,6 +56,8 @@ export default function NuevaCuenta() {
                 type="text"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                 placeholder="Apellido usuario"
+                value={formik.values.apellido}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="mb-4">
@@ -49,6 +72,8 @@ export default function NuevaCuenta() {
                 type="email"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                 placeholder="Email usuario"
+                value={formik.values.email}
+                onChange={formik.handleChange}
               />
             </div>
             <div className="mb-4">
@@ -63,6 +88,8 @@ export default function NuevaCuenta() {
                 type="password"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                 placeholder="Password usuario"
+                value={formik.values.password}
+                onChange={formik.handleChange}
               />
             </div>
             <input
