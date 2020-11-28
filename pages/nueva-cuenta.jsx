@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import Layout from "../componentes/Layout";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -16,6 +17,8 @@ const NUEVA_CUENTA = gql`
 `;
 
 export default function NuevaCuenta() {
+  const router = useRouter();
+
   // State del mensaje
   const [mensaje, guardarMensaje] = useState(null);
 
@@ -53,8 +56,15 @@ export default function NuevaCuenta() {
           },
         });
         // Usuario creado correctamente
+        guardarMensaje(
+          `Se creo correctamente el usuario: ${data.nuevoUsuario.nombre}`
+        );
 
         // Redirigir al usuario
+        setTimeout(() => {
+          guardarMensaje(null);
+          router.push("/login");
+        }, 3000);
       } catch (error) {
         guardarMensaje(error.message.replace("GraphQL error:", ""));
         setTimeout(() => {
