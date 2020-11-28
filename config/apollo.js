@@ -7,6 +7,7 @@ const client = new ApolloClient({
     uri: "http://localhost:4000/",
     fetch,
   }),
+  connectToDevTools: true,
 });
 
 export default client;
