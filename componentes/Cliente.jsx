@@ -1,6 +1,7 @@
 import React from "react";
 import Swal from "sweetalert2";
 import { gql, useMutation } from "@apollo/client";
+import Router from "next/router";
 
 const ELIMINAR_CLIENTE = gql`
   mutation eliminarCliente($id: ID!) {
@@ -40,7 +41,7 @@ const Cliente = ({ cliente: { nombre, apellido, empresa, email, id } }) => {
   });
 
   // Eliminar un cliente
-  const confirmarEliminarCliente = (id) => {
+  const confirmarEliminarCliente = () => {
     Swal.fire({
       title: "¿Estás seguro?",
       text: "¡Está cliente no se podrá recuperar!",
@@ -66,6 +67,13 @@ const Cliente = ({ cliente: { nombre, apellido, empresa, email, id } }) => {
     });
   };
 
+  const editarCliente = () => {
+    Router.push({
+      pathname: "/editar-cliente/[id]",
+      query: { id },
+    });
+  };
+
   return (
     <tr>
       <td className="border px-2 py-2">
@@ -77,9 +85,32 @@ const Cliente = ({ cliente: { nombre, apellido, empresa, email, id } }) => {
         <button
           type="button"
           className="flex justify-center items-center bg-red-800 py-2 px-4 w-full rounded text-white text-xs uppercase font-bold"
-          onClick={() => confirmarEliminarCliente(id)}
+          onClick={() => confirmarEliminarCliente()}
         >
           Eliminar{" "}
+          <svg
+            className="w-4 h-4 ml-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </button>
+      </td>
+      <td className="border px-2 py-2">
+        <button
+          type="button"
+          className="flex justify-center items-center bg-green-600 py-2 px-4 w-full rounded text-white text-xs uppercase font-bold"
+          onClick={() => editarCliente()}
+        >
+          Editar{" "}
           <svg
             className="w-4 h-4 ml-2"
             fill="none"
