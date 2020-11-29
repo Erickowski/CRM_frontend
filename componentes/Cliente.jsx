@@ -44,7 +44,7 @@ const Cliente = ({ cliente: { nombre, apellido, empresa, email, id } }) => {
   const confirmarEliminarCliente = () => {
     Swal.fire({
       title: "¿Estás seguro?",
-      text: "¡Está cliente no se podrá recuperar!",
+      text: "¡Este cliente no se podrá recuperar!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
