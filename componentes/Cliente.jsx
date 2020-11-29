@@ -1,9 +1,28 @@
 import React from "react";
+import Swal from "sweetalert2";
 
 const Cliente = ({ cliente: { nombre, apellido, empresa, email, id } }) => {
   // Eliminar un cliente
   const confirmarEliminarCliente = (id) => {
-    console.log("eliminado ", id);
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¡Está cliente no se podrá recuperar!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Si, eliminalo!",
+      cancelButtonText: "No, cancelar.",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("eliminando ", id);
+        Swal.fire(
+          "¡Cliente eliminado!",
+          "El cliente fue eliminado correctamente.",
+          "success"
+        );
+      }
+    });
   };
 
   return (
