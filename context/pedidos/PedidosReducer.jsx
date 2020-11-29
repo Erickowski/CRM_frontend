@@ -2,6 +2,7 @@ import {
   CANTIDAD_PRODUCTOS,
   SELECCIONAR_CLIENTE,
   SELECCIONAR_PRODUCTO,
+  ACTUALIZAR_TOTAL,
 } from "../../types";
 
 const PedidoReducer = (state, action) => {
@@ -23,6 +24,15 @@ const PedidoReducer = (state, action) => {
           producto.id === action.payload.id
             ? (producto = action.payload)
             : producto
+        ),
+      };
+    case ACTUALIZAR_TOTAL:
+      return {
+        ...state,
+        total: state.productos.reduce(
+          (nuevoTotal, articulo) =>
+            (nuevoTotal += articulo.precio * articulo.cantidad),
+          0
         ),
       };
     default:

@@ -5,7 +5,7 @@ import PedidoContext from "../../context/pedidos/PedidosContext";
 const ProductoResumen = ({ producto }) => {
   const { nombre, precio } = producto;
 
-  const { cantidadProductos } = useContext(PedidoContext);
+  const { cantidadProductos, actualizarTotal } = useContext(PedidoContext);
 
   const [cantidad, setCantidad] = useState(0);
 
@@ -16,6 +16,7 @@ const ProductoResumen = ({ producto }) => {
 
   useEffect(() => {
     actualizarCantidad();
+    actualizarTotal();
   }, [cantidad]);
 
   return (
