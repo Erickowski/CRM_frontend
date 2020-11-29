@@ -33,9 +33,22 @@ const PedidoState = ({ children }) => {
     });
   };
 
+  // Modifica las cantidades de los productos
+  const cantidadProductos = (nuevoProducto) => {
+    dispatch({
+      type: CANTIDAD_PRODUCTOS,
+      payload: nuevoProducto,
+    });
+  };
+
   return (
     <PedidoContext.Provider
-      value={{ productos: state.productos, agregarCliente, agregarProductos }}
+      value={{
+        productos: state.productos,
+        agregarCliente,
+        agregarProductos,
+        cantidadProductos,
+      }}
     >
       {children}
     </PedidoContext.Provider>
