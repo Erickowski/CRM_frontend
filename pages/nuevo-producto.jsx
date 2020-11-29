@@ -1,9 +1,28 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { gql, useMutation } from "@apollo/client";
+import Swal from "sweetalert2";
+import { useRouter } from "next/router";
 
 import Layout from "../componentes/Layout";
 
+const NUEVO_PRODUCTO = gql`
+  mutation nuevoProducto($input: ProductoInput) {
+    nuevoProducto(input: $input) {
+      id
+      nombre
+      existencia
+      precio
+    }
+  }
+`;
+
 export default function NuevoProducto() {
+  const router = useRouter();
+
+  // Mutation de apollo
+  const [nuevoProducto] = useMutation(NUEVO_PRODUCTO);
+
   // Formulario para nuevos productos
   const formik = useFormik({
     initialValues: {
@@ -21,8 +40,26 @@ export default function NuevoProducto() {
         .required("Agrega la cantidad disponible.")
         .positive("No se aceptan números negativos."),
     }),
-    onSubmit: () => {
-      console.log("submit");
+    onSubmit: async ({ nombre, existencia, precio }) => {
+      try {
+        const { data } = await nuevoProducto({
+          variables: {
+            input: {
+              nombre,
+              existencia,
+              precio,
+            },
+          },
+        });
+
+        // Mostrar una alerta
+        Swal.fire("Creado", "Se creó el producto correctamente", "success");
+
+        // Redireccionar hacía los productos
+        router.push("/productos");
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
