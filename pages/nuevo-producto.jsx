@@ -17,11 +17,37 @@ const NUEVO_PRODUCTO = gql`
   }
 `;
 
+const OBTENER_PRODUCTOS = gql`
+  query obtenerProductos {
+    obtenerProductos {
+      id
+      nombre
+      precio
+      existencia
+    }
+  }
+`;
+
 export default function NuevoProducto() {
   const router = useRouter();
 
   // Mutation de apollo
-  const [nuevoProducto] = useMutation(NUEVO_PRODUCTO);
+  const [nuevoProducto] = useMutation(NUEVO_PRODUCTO, {
+    update(cache, { data: { nuevoProducto } }) {
+      // Obtener el objeto de cache que deseamos actualizar
+      const { obtenerProductos } = cache.readQuery({
+        query: OBTENER_PRODUCTOS,
+      });
+
+      // Reescribimos el cache (el cacho nunca se debe modificar)
+      cache.writeQuery({
+        query: OBTENER_PRODUCTOS,
+        data: {
+          obtenerProductos: [...obtenerProductos, nuevoProducto],
+        },
+      });
+    },
+  });
 
   // Formulario para nuevos productos
   const formik = useFormik({
@@ -42,7 +68,7 @@ export default function NuevoProducto() {
     }),
     onSubmit: async ({ nombre, existencia, precio }) => {
       try {
-        const { data } = await nuevoProducto({
+        await nuevoProducto({
           variables: {
             input: {
               nombre,
