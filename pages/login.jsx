@@ -50,7 +50,7 @@ export default function Login() {
         // Redireccionar a clientes
         setTimeout(() => {
           router.push("/");
-        }, 3000);
+        }, 2000);
       } catch (error) {
         guardarMensaje(error.message.replace("GraphQL error:", ""));
         setTimeout(() => {
