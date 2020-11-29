@@ -67,7 +67,7 @@ export default function EditarCliente() {
     telefono,
   }) => {
     try {
-      const { data } = await actualizarCliente({
+      await actualizarCliente({
         variables: {
           id,
           input: {
