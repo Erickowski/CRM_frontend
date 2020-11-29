@@ -1,8 +1,10 @@
-import Layout from "../componentes/Layout";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { gql, useMutation } from "@apollo/client";
-import { useRouter } from "next/router";
+
+import Layout from "../componentes/Layout";
 
 const NUEVO_CLIENTE = gql`
   mutation nuevoCliente($input: ClienteInput) {
@@ -31,6 +33,9 @@ const OBTENER_CLIENTES_USUARIO = gql`
 
 export default function NuevoCliente() {
   const router = useRouter();
+
+  // State del mensaje
+  const [mensaje, guardarMensaje] = useState(null);
 
   // Mutation para crear nuevos clientes
   const [nuevoCliente] = useMutation(NUEVO_CLIENTE, {
@@ -83,14 +88,26 @@ export default function NuevoCliente() {
         });
         router.push("/");
       } catch (error) {
-        console.log(error);
+        guardarMensaje(error.message.replace("GraphQL error:", ""));
+        setTimeout(() => {
+          guardarMensaje(null);
+        }, 2000);
       }
     },
   });
 
+  const mostrarMensaje = () => {
+    return (
+      <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+        <p>{mensaje}</p>
+      </div>
+    );
+  };
+
   return (
     <Layout>
       <h1 className="text-2xl text-gray-800 font-light">Nuevo Cliente</h1>
+      {mensaje && mostrarMensaje()}
       <div className="flex justify-center mt-5">
         <div className="w-full max-w-lg">
           <form
