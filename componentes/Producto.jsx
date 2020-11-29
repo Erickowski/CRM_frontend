@@ -1,8 +1,44 @@
 import React from "react";
 import Swal from "sweetalert2";
+import { gql, useMutation } from "@apollo/client";
 
-const Producto = ({ producto: { nombre, existencia, precio } }) => {
-  // Eliminar un cliente
+const ELIMINAR_PRODUCTO = gql`
+  mutation eliminarProducto($id: ID!) {
+    eliminarProducto(id: $id)
+  }
+`;
+
+const OBTENER_PRODUCTOS = gql`
+  query obtenerProductos {
+    obtenerProductos {
+      id
+      nombre
+      precio
+      existencia
+    }
+  }
+`;
+
+const Producto = ({ producto: { id, nombre, existencia, precio } }) => {
+  // Mutation para eliminar productos
+  const [eliminarProducto] = useMutation(ELIMINAR_PRODUCTO, {
+    update(cache) {
+      const { obtenerProductos } = cache.readQuery({
+        query: OBTENER_PRODUCTOS,
+      });
+
+      cache.writeQuery({
+        query: OBTENER_PRODUCTOS,
+        data: {
+          obtenerProductos: obtenerProductos.filter(
+            (productoActual) => productoActual.id !== id
+          ),
+        },
+      });
+    },
+  });
+
+  // Eliminar un producto
   const confirmarEliminarProducto = () => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -15,16 +51,16 @@ const Producto = ({ producto: { nombre, existencia, precio } }) => {
       cancelButtonText: "No, cancelar.",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // try {
-        //   const { data } = await eliminarCliente({
-        //     variables: {
-        //       id,
-        //     },
-        //   });
-        // Swal.fire("¡Producto eliminado!", data.eliminarCliente, "success");
-        // } catch (error) {
-        //   console.log(error);
-        // }
+        try {
+          const { data } = await eliminarProducto({
+            variables: {
+              id,
+            },
+          });
+          Swal.fire("¡Producto eliminado!", data.eliminarProducto, "success");
+        } catch (error) {
+          console.log(error);
+        }
       }
     });
   };
