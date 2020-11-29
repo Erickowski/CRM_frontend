@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useQuery, gql } from "@apollo/client";
 import { Formik } from "formik";
+import * as Yup from "yup";
 
 import Layout from "../../componentes/Layout";
 
@@ -30,15 +31,41 @@ export default function EditarCliente() {
     },
   });
 
+  // Schema de validación
+  const schemaValidation = Yup.object({
+    nombre: Yup.string().required("El nombre del cliente es obligatorio."),
+    apellido: Yup.string().required("El apellido del cliente es obligatorio."),
+    empresa: Yup.string().required("El campo empresa es obligatorio."),
+    email: Yup.string()
+      .email("Email no válido.")
+      .required("El email del cliente es obligatorio."),
+  });
+
   if (loading) return "Cargando...";
+
+  const { obtenerCliente } = data;
 
   return (
     <Layout>
       <h1 className="text-2xl text-gray-800 font-light">Editar Cliente</h1>
       <div className="flex justify-center mt-5">
         <div className="w-full max-w-lg">
-          <Formik>
-            {({ handleSubmit, handleChange, handleBlur }) => {
+          <Formik
+            validationSchema={schemaValidation}
+            enableReinitialize
+            initialValues={obtenerCliente}
+            onSubmit={(valores, funciones) => {
+              console.log("enviando");
+            }}
+          >
+            {({
+              handleSubmit,
+              handleChange,
+              handleBlur,
+              errors,
+              touched,
+              values,
+            }) => {
               return (
                 <form
                   className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
@@ -56,17 +83,17 @@ export default function EditarCliente() {
                       type="text"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                       placeholder="Nombre cliente"
-                      // value={formik.values.nombre}
+                      value={values.nombre}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
                   </div>
-                  {/* {formik.touched.nombre && formik.errors.nombre && (
-              <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                <p className="font-bold">Error</p>
-                <p>{formik.errors.nombre}</p>
-              </div>
-            )} */}
+                  {touched.nombre && errors.nombre && (
+                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                      <p className="font-bold">Error</p>
+                      <p>{errors.nombre}</p>
+                    </div>
+                  )}
                   <div className="mb-4">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
@@ -79,17 +106,17 @@ export default function EditarCliente() {
                       type="text"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                       placeholder="Apellido cliente"
-                      // value={formik.values.apellido}
+                      value={values.apellido}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
                   </div>
-                  {/* {formik.touched.apellido && formik.errors.apellido && (
-              <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                <p className="font-bold">Error</p>
-                <p>{formik.errors.apellido}</p>
-              </div>
-            )} */}
+                  {touched.apellido && errors.apellido && (
+                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                      <p className="font-bold">Error</p>
+                      <p>{errors.apellido}</p>
+                    </div>
+                  )}
                   <div className="mb-4">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
@@ -102,17 +129,17 @@ export default function EditarCliente() {
                       type="text"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                       placeholder="Empresa cliente"
-                      // value={formik.values.empresa}
+                      value={values.empresa}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
                   </div>
-                  {/* {formik.touched.empresa && formik.errors.empresa && (
-              <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                <p className="font-bold">Error</p>
-                <p>{formik.errors.empresa}</p>
-              </div>
-            )} */}
+                  {touched.empresa && errors.empresa && (
+                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                      <p className="font-bold">Error</p>
+                      <p>{errors.empresa}</p>
+                    </div>
+                  )}
                   <div className="mb-4">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
@@ -125,17 +152,17 @@ export default function EditarCliente() {
                       type="email"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                       placeholder="Email cliente"
-                      // value={formik.values.email}
+                      value={values.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
                   </div>
-                  {/* {formik.touched.email && formik.errors.email && (
-              <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                <p className="font-bold">Error</p>
-                <p>{formik.errors.email}</p>
-              </div>
-            )} */}
+                  {touched.email && errors.email && (
+                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                      <p className="font-bold">Error</p>
+                      <p>{errors.email}</p>
+                    </div>
+                  )}
                   <div className="mb-4">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
@@ -148,7 +175,7 @@ export default function EditarCliente() {
                       type="tel"
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                       placeholder="Telefono cliente"
-                      // value={formik.values.telefono}
+                      value={values.telefono}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
