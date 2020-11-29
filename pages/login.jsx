@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useRouter } from "next/router";
 import Layout from "../componentes/Layout";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,8 +14,13 @@ const AUTENTICAR_USUARIO = gql`
 `;
 
 export default function Login() {
+  // State del mensaje
+  const [mensaje, guardarMensaje] = useState(null);
+
   // Mutation para autenticar usuarios
   const [autenticarUsuario] = useMutation(AUTENTICAR_USUARIO);
+
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -36,15 +43,34 @@ export default function Login() {
             },
           },
         });
-        console.log(data);
+        guardarMensaje("Autenticado...");
+        // Guardar el token en localStorage
+        const { token } = data.autenticarUsuario;
+        localStorage.setItem("token", token);
+        // Redireccionar a clientes
+        setTimeout(() => {
+          router.push("/");
+        }, 3000);
       } catch (error) {
-        console.log(error);
+        guardarMensaje(error.message.replace("GraphQL error:", ""));
+        setTimeout(() => {
+          guardarMensaje(null);
+        }, 3000);
       }
     },
   });
 
+  const mostrarMensaje = () => {
+    return (
+      <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+        <p>{mensaje}</p>
+      </div>
+    );
+  };
+
   return (
     <Layout>
+      {mensaje && mostrarMensaje()}
       <h1 className="text-center text-2xl text-white font-light">Login</h1>
       <div className="flex justify-center mt-5">
         <div className="w-full max-w-sm">
