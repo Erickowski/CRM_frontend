@@ -3,6 +3,7 @@ import Layout from "../componentes/Layout";
 import AsignarCliente from "../componentes/pedidos/AsignarCliente";
 import AsignarProducto from "../componentes/pedidos/AsignarProducto";
 import ResumenPedido from "../componentes/pedidos/ResumenPedido";
+import Total from "../componentes/pedidos/Total";
 
 export default function NuevoPedido() {
   return (
@@ -13,6 +14,13 @@ export default function NuevoPedido() {
           <AsignarCliente />
           <AsignarProducto />
           <ResumenPedido />
+          <Total />
+          <button
+            type="button"
+            className={`bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900`}
+          >
+            Registrar pedido
+          </button>
         </div>
       </div>
     </Layout>
