@@ -21,11 +21,6 @@ const Header = () => {
   if (loading) return null;
   const { nombre, apellido } = data.obtenerUsuario;
 
-  //   Si no hay informacion
-  if (!data) {
-    router.push("/login");
-  }
-
   const cerrarSesion = () => {
     localStorage.removeItem("token");
     router.push("/login");
