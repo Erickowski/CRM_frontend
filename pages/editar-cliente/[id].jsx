@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
 
 import Layout from "../../componentes/Layout";
 
@@ -13,6 +14,15 @@ const OBTENER_CLIENTE = gql`
       email
       telefono
       empresa
+    }
+  }
+`;
+
+const ACTUALIZAR_CLIENTE = gql`
+  mutation actualizarCliente($id: ID!, $input: ClienteInput) {
+    actualizarCliente(id: $id, input: $input) {
+      nombre
+      email
     }
   }
 `;
@@ -31,6 +41,9 @@ export default function EditarCliente() {
     },
   });
 
+  // Actualizar el cliente
+  const [actualizarCliente] = useMutation(ACTUALIZAR_CLIENTE);
+
   // Schema de validación
   const schemaValidation = Yup.object({
     nombre: Yup.string().required("El nombre del cliente es obligatorio."),
@@ -45,6 +58,36 @@ export default function EditarCliente() {
 
   const { obtenerCliente } = data;
 
+  // Modificar el cliente en la BD
+  const actualizarInfoCliente = async ({
+    nombre,
+    apellido,
+    empresa,
+    email,
+    telefono,
+  }) => {
+    try {
+      const { data } = await actualizarCliente({
+        variables: {
+          id,
+          input: {
+            nombre,
+            apellido,
+            empresa,
+            email,
+            telefono,
+          },
+        },
+      });
+      //  Mostrar alerta
+      Swal.fire("Actualizado", "El cliente ha sido actualizado.", "success");
+      // Redireccionar
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Layout>
       <h1 className="text-2xl text-gray-800 font-light">Editar Cliente</h1>
@@ -54,8 +97,8 @@ export default function EditarCliente() {
             validationSchema={schemaValidation}
             enableReinitialize
             initialValues={obtenerCliente}
-            onSubmit={(valores, funciones) => {
-              console.log("enviando");
+            onSubmit={(valores) => {
+              actualizarInfoCliente(valores);
             }}
           >
             {({
