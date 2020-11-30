@@ -16,6 +16,14 @@ const ELIMINAR_PEDIDO = gql`
   }
 `;
 
+const OBTENER_PEDIDOS = gql`
+  query obtenerPedidosVendedor {
+    obtenerPedidosVendedor {
+      id
+    }
+  }
+`;
+
 const Pedido = ({
   pedido: {
     id,
@@ -31,7 +39,21 @@ const Pedido = ({
 
   // Mutation para cambiar el estado de un pedido
   const [actualizarPedido] = useMutation(ACTUALIZAR_PEDIDO);
-  const [eliminarPedido] = useMutation(ELIMINAR_PEDIDO);
+  const [eliminarPedido] = useMutation(ELIMINAR_PEDIDO, {
+    update(cache) {
+      const { obtenerPedidosVendedor } = cache.readQuery({
+        query: OBTENER_PEDIDOS,
+      });
+      cache.writeQuery({
+        query: OBTENER_PEDIDOS,
+        data: {
+          obtenerPedidosVendedor: obtenerPedidosVendedor.filter(
+            (pedido) => pedido.id !== id
+          ),
+        },
+      });
+    },
+  });
 
   useEffect(() => {
     if (estadoPedido) {
