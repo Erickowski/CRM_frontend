@@ -45,8 +45,10 @@ export default function Login() {
         });
         guardarMensaje("Autenticado...");
         // Guardar el token en localStorage
-        const { token } = data.autenticarUsuario;
-        localStorage.setItem("token", token);
+        setTimeout(() => {
+          const { token } = data.autenticarUsuario;
+          localStorage.setItem("token", token);
+        }, 1000);
         // Redireccionar a clientes
         setTimeout(() => {
           router.push("/");

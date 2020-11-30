@@ -27,8 +27,8 @@ const Header = () => {
   };
 
   return (
-    <div className="flex justify-around mb-6">
-      <p className="mr-2">
+    <div className="sm:flex sm:justify-around mb-6">
+      <p className="mr-2 mb-5 lg:mb-0">
         Hola {nombre} {apellido}
       </p>
       <button
