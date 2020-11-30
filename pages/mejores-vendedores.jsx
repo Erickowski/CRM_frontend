@@ -8,6 +8,7 @@ import {
   Legend,
 } from "recharts";
 import { gql, useQuery } from "@apollo/client";
+import { useEffect } from "react";
 
 import Layout from "../componentes/Layout";
 
@@ -24,10 +25,23 @@ const MEJORES_VENDEDORES = gql`
 `;
 
 export default function MejoresVendedores() {
-  const { data, loading, error } = useQuery(MEJORES_VENDEDORES);
+  const { data, loading, error, startPolling, stopPolling } = useQuery(
+    MEJORES_VENDEDORES
+  );
+
+  useEffect(() => {
+    startPolling(1000);
+    return () => {
+      stopPolling();
+    };
+  }, [startPolling, stopPolling]);
+
   if (loading) return "Cargando...";
+
   const { mejoresVendedores } = data;
+
   const vendedorGrafica = [];
+
   mejoresVendedores.map((vendedor, index) => {
     vendedorGrafica[index] = {
       ...vendedor.vendedor[0],
