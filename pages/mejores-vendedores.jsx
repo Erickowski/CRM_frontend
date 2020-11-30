@@ -17,7 +17,6 @@ const MEJORES_VENDEDORES = gql`
     mejoresVendedores {
       vendedor {
         nombre
-        email
       }
       total
     }
