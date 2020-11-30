@@ -75,7 +75,7 @@ export default function NuevoCliente() {
     }),
     onSubmit: async ({ nombre, apellido, empresa, email, telefono }) => {
       try {
-        const { data } = await nuevoCliente({
+        await nuevoCliente({
           variables: {
             input: {
               nombre,
@@ -215,7 +215,7 @@ export default function NuevoCliente() {
               </label>
               <input
                 id="telefono"
-                type="tel"
+                type="text"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus: shadow-outline"
                 placeholder="Telefono cliente"
                 value={formik.values.telefono}
