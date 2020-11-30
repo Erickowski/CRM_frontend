@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
+import Swal from "sweetalert2";
 
 const ACTUALIZAR_PEDIDO = gql`
   mutation actualizarPedido($id: ID!, $input: PedidoInput) {
     actualizarPedido(id: $id, input: $input) {
       estado
     }
+  }
+`;
+
+const ELIMINAR_PEDIDO = gql`
+  mutation eliminarPedido($id: ID!) {
+    eliminarPedido(id: $id)
   }
 `;
 
@@ -24,6 +31,7 @@ const Pedido = ({
 
   // Mutation para cambiar el estado de un pedido
   const [actualizarPedido] = useMutation(ACTUALIZAR_PEDIDO);
+  const [eliminarPedido] = useMutation(ELIMINAR_PEDIDO);
 
   useEffect(() => {
     if (estadoPedido) {
@@ -58,6 +66,32 @@ const Pedido = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const confirmarEliminarPedido = () => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¡Este pedido no se podrá recuperar!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Si, eliminalo!",
+      cancelButtonText: "No, cancelar.",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { data } = await eliminarPedido({
+            variables: {
+              id,
+            },
+          });
+          Swal.fire("Pedido eliminado!", data.eliminarPedido, "success");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
   };
 
   return (
@@ -130,7 +164,10 @@ const Pedido = ({
         <p className="text-gray-800 mt-3 font-bold">
           Total a pagar: <span className="font-light">$ {total}</span>
         </p>
-        <button className="flex item-center mt-4 bg-red-800 px-5 py-2 inline-block text-white rounded leading-tight uppercase text-xs font-bold">
+        <button
+          className="flex item-center mt-4 bg-red-800 px-5 py-2 inline-block text-white rounded leading-tight uppercase text-xs font-bold"
+          onClick={() => confirmarEliminarPedido()}
+        >
           Eliminar pedido
           <svg
             className="w-4 h-4 ml-2"
