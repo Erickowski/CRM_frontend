@@ -10,6 +10,7 @@ const OBTENER_PEDIDOS = gql`
       id
       pedido {
         id
+        nombre
         cantidad
       }
       cliente
@@ -24,6 +25,7 @@ export default function Pedidos() {
   const { data, loading, error } = useQuery(OBTENER_PEDIDOS);
 
   if (loading) return "Cargando...";
+  console.log(data);
 
   const { obtenerPedidosVendedor } = data;
 
