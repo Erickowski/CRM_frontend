@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+
+const ACTUALIZAR_PEDIDO = gql`
+  mutation actualizarPedido($id: ID!, $input: PedidoInput) {
+    actualizarPedido(id: $id, input: $input) {
+      estado
+    }
+  }
+`;
 
 const Pedido = ({
   pedido: {
     id,
     total,
+    cliente,
     cliente: { nombre, apellido, email, telefono },
     estado,
     pedido,
@@ -11,6 +21,9 @@ const Pedido = ({
 }) => {
   const [estadoPedido, setEstadoPedido] = useState(estado);
   const [clase, setClase] = useState("");
+
+  // Mutation para cambiar el estado de un pedido
+  const [actualizarPedido] = useMutation(ACTUALIZAR_PEDIDO);
 
   useEffect(() => {
     if (estadoPedido) {
@@ -27,6 +40,23 @@ const Pedido = ({
       setClase("border-green-500");
     } else {
       setClase("border-red-800");
+    }
+  };
+
+  const cambiarEstadoPedido = async (estado) => {
+    try {
+      const { data } = await actualizarPedido({
+        variables: {
+          id,
+          input: {
+            estado,
+            cliente: cliente.id,
+          },
+        },
+      });
+      setEstadoPedido(data.actualizarPedido.estado);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -79,7 +109,8 @@ const Pedido = ({
         <h2 className="text-gray-800 font-bold mt-10">Estado pedido: </h2>
         <select
           className="mt-2 appearance-none bg-blue-600 border border-blue-600 text-white p-2 text-center rounded leading-tight focus:outline-none focus:bg-blue-600 focus:border-blue-500 uppercase text-xs"
-          value={estado}
+          value={estadoPedido}
+          onChange={(e) => cambiarEstadoPedido(e.target.value)}
         >
           <option value="COMPLETADO">COMPLETADO</option>
           <option value="PENDIENTE">PENDIENTE</option>
